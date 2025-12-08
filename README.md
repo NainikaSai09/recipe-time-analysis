@@ -1,5 +1,5 @@
 # 🍽️ Recipe Time Predictor
-### *DSC 80 Final Project — Nainika Neerukonda*
+### Author: Nainika Neerukonda
 
 ---
 
