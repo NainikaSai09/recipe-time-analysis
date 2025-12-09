@@ -76,10 +76,14 @@ For predicting preparation time (`minutes`), the most relevant variables include
 These features describe recipe structure and complexity, which logically influence preparation time.
 
 
-
-
-
 ## **Data Cleaning and Exploratory Data Analysis**
+<iframe 
+    src="assets/calories_dist.html"
+    width="800"
+    height="600"
+    frameborder="0">
+</iframe>
+
 
 ## **Assessment of Missingness**
 
