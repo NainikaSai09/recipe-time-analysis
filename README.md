@@ -356,6 +356,46 @@ My EDA showed that steps, ingredients, and nutritional values relate to prep tim
 
 ## **Baseline Model**
 
+#### Model Description
+
+For my baseline model, I built a Linear Regression model to predict recipe preparation time (minutes) using the simplest meaningful set of features.
+
+#### Features Used
+
+I selected three interpretable features based on earlier EDA:
+
+* n_steps: quantitative, number of procedural steps in the recipe
+* n_ingredients: quantitative, number of ingredients used
+* step_bin: nominal categorical, binned version of n_steps (e.g., "0-5", "6-10", etc)
+
+Quantitative features: 2, Nominal features: 1
+
+#### Preprocessing and Encoding
+
+All preprocessing steps were implemented in a single sklearn Pipeline, as required:
+Numerical features (n_steps, n_ingredients) were passed through unchanged (passthrough), since linear regression handles them naturally. Categorical feature (step_bin) was encoded with OneHotEncoder (handle_unknown="ignore"), producing binary indicator columns for each step range.
+This ensures the model appropriately incorporates categorical information without imposing order where none exists.
+
+#### Train/Test Split
+
+To evaluate generalization performance:
+
+* 80% of data was used for training
+
+* 20% was held out as a test set
+
+#### Baseline Model Performance
+
+Using the cleaned dataset after removing outliers, the baseline model achieved:
+
+* RMSE	37.41 minutes
+* MAE	24.93 minutes
+
+MAE indicates that on average, the model is off by about 25 minutes, while the RMSE, which penalizes larger errors, remains relatively high due to residual variation in prep times.
+
+
+While the baseline captures some linear relationship between recipe complexity and prep time, it cannot model nonlinear relationships, which are likely present in cooking times. Variation in preparation time is still large, even within the same number of steps or ingredients. The substantial room for improvement motivates the development of a richer final model.
+
 ## **Final Model**
 
 ## **Fairness Analysis**
