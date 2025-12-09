@@ -134,21 +134,51 @@ The cleaned dataframe ended up with 83782 rows and 19 columns. Because the full 
 
 ### Univariate Analysis
 
+To better understand the structure of the dataset and the behavior of key variables, I first examined the distributions of several columns that are relevant to predicting preparation time. Since my prediction problem centers around the minutes variable, understanding its distribution is essential before building any models.
 
-### Bivariate Analysis
-
-
-### Interesting Aggregates
-
-
+The distribution of preparation times is highly right-skewed. Most recipes take under 150 minutes, while a small number take significantly longer, creating a long tail. These extreme values motivated the removal of unrealistic outliers during data cleaning.
 
 <iframe 
-    src="assets/calories_dist.html"
+    src="assets/minutes_dist.html"
     width="800"
     height="600"
     frameborder="0">
 </iframe>
 
+
+Interpretation: The strong right skew indicates that a large portion of recipes are quick to prepare, while only a few require exceptionally long cooking times.
+
+### Bivariate Analysis
+
+To explore how different recipe attributes relate to preparation time, I examined several pairwise relationships using scatter plots and trendlines. Understanding these associations helps identify meaningful predictors for modeling.
+
+One of the relationships was the one between number of steps and preparation time. This relationship is one of the most important for the prediction problem, since the number of steps is a natural proxy for procedural complexity.
+
+<iframe 
+  src="assets/steps_minutes.html" 
+  width="800" 
+  height="600" 
+  frameborder="0">
+</iframe>
+
+Interpretation: This plot reveals a weak but noticeable positive relationship between the number of steps and preparation time. Recipes with more steps tend to require longer cooking times, but the association is highly variable, even recipes with few steps can take anywhere from a few minutes to several hours. The log scale shows that prep times span multiple orders of magnitude, highlighting the complexity and diversity of recipe structures.
+
+### Interesting Aggregates
+
+To better understand patterns in recipe complexity and preparation time, I computed a grouped table summarizing average prep time and number of ingredients across different step ranges. Since the number of steps is one of the strongest indicators of recipe complexity, grouping recipes this way helps uncover structural patterns in the dataset.
+
+The table below summarizes three aggregates for each step range:
+
+| step_bin   |   minutes |
+|:-----------|----------:|
+| 0–5        |   30.574  |
+| 6–10       |   43.2888 |
+| 11–20      |   55.3458 |
+| 21–40      |   75.968  |
+| 41–80      |  102.516  |
+| 80+        |  131      |
+
+More complex recipes (those with many steps) tend to require more ingredients and significantly longer preparation times. However, the increase in prep time is not linear, some moderately-step-heavy recipes still have relatively short prep times, suggesting that factors beyond step count influence total cooking time. These aggregates helped guide feature engineering decisions in later modeling steps.
 
 ## **Assessment of Missingness**
 
