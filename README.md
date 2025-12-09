@@ -7,7 +7,7 @@
 
 This project uses the **Food.com Recipes + Interactions** dataset, consisting of two large tables that together describe over 80,000 recipes and more than 700,000 user interactions.
 
-### Dataset Size
+#### Dataset Size
 
 | Dataset        | Rows    | Columns |
 |----------------|---------|---------|
