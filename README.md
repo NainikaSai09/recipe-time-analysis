@@ -215,8 +215,7 @@ Although recipes with missing descriptions appear *slightly* more complex, this 
 
 **Conclusion:**  
 There is **no evidence** that `n_steps` influences whether a description is missing.
-
-**(Embed your boxplot here)**  
+  
 ```html
 <iframe
   src="assets/missing.html"
@@ -242,11 +241,10 @@ Calorie content appears unrelated to whether someone writes a description.
 
 **Conclusion:**  
 There is no evidence that recipe calories influence missingness of the description field.
-
-**(Embed your boxplot here)**  
+ 
 ```html
 <iframe
-  src="assets/absdiff_dist.html.html"
+  src="assets/absdiff_dist.html"
   width="800"
   height="600"
   frameborder="0"
@@ -299,7 +297,7 @@ However, this does not prove that high-step recipes always require more time.
 Rather, the evidence suggests that recipes with more steps tend to take longer to prepare, beyond what could be explained by random variation in this dataset.
 
 <iframe   
-  src="assets/diff_mean_mins.html.html"
+  src="assets/diff_mean_mins.html"
   width="800"
   height="600"
   frameborder="0"
