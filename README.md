@@ -84,22 +84,15 @@ To make the recipes dataset usable for analysis and modeling, I performed severa
 
 1. **Merging recipes with user interactions**
 
-   The raw data come in two files: `RAW_recipes.csv` (recipe metadata) and `RAW_interactions.csv` (user ratings and reviews).  
-   On the website, each recipe can have many user interactions, but some recipes may have none.  
-   To mirror this structure, I performed a **left merge** of recipes with interactions on `id` (recipe ID) and `recipe_id`.  
-   A left merge preserves all recipes (even those without ratings), which is important because users can still view and cook unrated recipes.
+   The raw data come in two files: `RAW_recipes.csv` (recipe metadata) and `RAW_interactions.csv` (user ratings and reviews). On the website, each recipe can have many user interactions, but some recipes may have none. To mirror this structure, I performed a **left merge** of recipes with interactions on `id` (recipe ID) and `recipe_id`. A left merge preserves all recipes (even those without ratings), which is important because users can still view and cook unrated recipes.
 
 2. **Treating 0-star ratings as missing (NaN)**
 
-   On Food.com, users cannot actually give a 0-star rating. In practice, a `rating` of 0 in the interactions file indicates that the user left a review without selecting a star value.  
-   Because a 0 here does **not** represent a true rating on the same scale as 1–5, I replaced all `rating = 0` values with `NaN`.  
-   This avoids artificially pulling down average ratings and better reflects the true data-generating process: “no rating given” rather than “worst possible rating.”
+   On Food.com, users cannot actually give a 0-star rating. In practice, a `rating` of 0 in the interactions file indicates that the user left a review without selecting a star value. Because a 0 here does **not** represent a true rating on the same scale as 1–5, I replaced all `rating = 0` values with `NaN`. This avoids artificially pulling down average ratings and better reflects the true data-generating process: “no rating given” rather than “worst possible rating.”
 
 3. **Computing average rating per recipe**
 
-   After cleaning the ratings, I aggregated the interactions by recipe and computed an **average rating** for each `id`.  
-   I then merged this average back into the recipes table as a new column, `average_rating`.  
-   This creates a single, recipe-level dataset that summarizes user feedback and can be used directly in plots, hypothesis tests, and prediction models.
+   After cleaning the ratings, I aggregated the interactions by recipe and computed an **average rating** for each `id`. I then merged this average back into the recipes table as a new column, `average_rating`. This creates a single, recipe-level dataset that summarizes user feedback and can be used directly in plots, hypothesis tests, and prediction models.
 
 4. **Parsing the `nutrition` column into numeric features**
 
@@ -113,12 +106,7 @@ To make the recipes dataset usable for analysis and modeling, I performed severa
 
 5. **Removing extreme outliers in `minutes`**
 
-   The `minutes` column contains a few unrealistically large values (e.g., recipes recorded as taking tens of thousands of minutes).  
-   These are likely data entry errors or artifacts of scraping, and they strongly distort visualizations and inflate error metrics like RMSE.  
-   To obtain a more realistic and stable dataset, I restricted the data to recipes with preparation times between the **5th and 95th percentiles** of `minutes`.  
-   This keeps the vast majority of plausible cooking times while trimming extreme outliers that do not reflect typical user experience.
-
-Overall, these steps produce a cleaner, more interpretable recipe-level dataset that better reflects how the data arise on Food.com and supports meaningful exploratory analysis and modeling.
+   The `minutes` column contains a few unrealistically large values (e.g., recipes recorded as taking tens of thousands of minutes). These are likely data entry errors or artifacts of scraping, and they strongly distort visualizations and inflate error metrics like RMSE. To obtain a more realistic and stable dataset, I restricted the data to recipes with preparation times between the **5th and 95th percentiles** of `minutes`. This keeps the vast majority of plausible cooking times while trimming extreme outliers that do not reflect typical user experience.
 
 
 The cleaned dataframe ended up with 83782 rows and 19 columns. Because the full dataset contains many columns, I display only the most relevant ones for readability.Below is the head of the cleaned `recipes` DataFrame used for the rest of the analysis (scroll right to view more columns):  
@@ -146,7 +134,8 @@ The distribution of preparation times is highly right-skewed. Most recipes take 
 </iframe>
 
 
-Interpretation: The strong right skew indicates that a large portion of recipes are quick to prepare, while only a few require exceptionally long cooking times.
+#### Interpretation: 
+The strong right skew indicates that a large portion of recipes are quick to prepare, while only a few require exceptionally long cooking times.
 
 ### Bivariate Analysis
 
@@ -167,7 +156,7 @@ This plot reveals a weak but noticeable positive relationship between the number
 
 ### Interesting Aggregates
 
-To better understand patterns in recipe complexity and preparation time, I computed a grouped table summarizing average prep time and number of ingredients across different step ranges. Since the number of steps is one of the strongest indicators of recipe complexity, grouping recipes this way helps uncover structural patterns in the dataset.
+To better understand patterns in recipe complexity and preparation time, I computed a grouped table summarizing average prep time and number of ingredients across different step ranges. 
 
 The table below summarizes three aggregates for each step range:
 
@@ -187,7 +176,7 @@ More complex recipes (those with many steps) tend to require more ingredients an
 ### NMAR Analysis
 I believe the **`description`** column is **NMAR (Not Missing At Random)**. Whether a contributor writes a description likely depends on unobserved, person-specific factors such as their motivation, writing habits, or how strongly they feel about the recipe. These factors are **not recorded** anywhere else in the dataset, so the probability that `description` is missing cannot be fully explained using observed variables like `n_steps`, `minutes`, or `average_rating`.
 
-Because this missingness mechanism depends on unobserved contributor traits, the missingness in `description` is best characterized as **NMAR**. To potentially treat it as **MAR**, we would need additional data about user behavior — for example, per-user history of how often they leave descriptions, time spent on the site, or whether they usually post detailed content. With such behavioral features, we might be able to model the missingness using observed information instead of unobserved preferences.
+Because this missingness mechanism depends on unobserved contributor traits, the missingness in `description` is best characterized as **NMAR**. To potentially treat it as **MAR**, we would need additional data about user behavior, for example, per-user history of how often they leave descriptions, time spent on the site, or whether they usually post detailed content. With such behavioral features, we might be able to model the missingness using observed information instead of unobserved preferences.
 
 ### Missingness Dependency
 
@@ -210,13 +199,12 @@ For both tests, the test statistic was the **absolute difference in means** betw
 **Observed statistic:** ≈ **0.995**  
 **Permutation test p-value:** **0.201**
 
-This p-value is larger than 0.05, meaning the observed difference in average step count is **not statistically significant**.  
-Although recipes with missing descriptions appear *slightly* more complex, this difference is consistent with what could arise by random chance.
+This p-value is larger than 0.05, meaning the observed difference in average step count is **not statistically significant**. Although recipes with missing descriptions appear *slightly* more complex, this difference is consistent with what could arise by random chance.
 
 **Conclusion:**  
 There is **no evidence** that `n_steps` influences whether a description is missing.
   
-```html
+
 <iframe
   src="assets/missing.html"
   width="800"
@@ -242,7 +230,7 @@ Calorie content appears unrelated to whether someone writes a description.
 **Conclusion:**  
 There is no evidence that recipe calories influence missingness of the description field.
  
-```html
+
 <iframe
   src="assets/absdiff_dist.html"
   width="800"
@@ -273,7 +261,7 @@ Using the difference in mean minutes between the two groups:
 
 A one-sided permutation test was used because:
 
-* It makes no assumptions about the data distribution (important because minutes is highly skewed).
+* It makes no assumptions about the data distribution 
 
 * Shuffling the group labels simulates a world where step count does not matter, directly aligning with our null hypothesis.
 
@@ -308,6 +296,63 @@ The observed difference in mean preparation time (red line) is far outside the r
 
 
 ## **Framing a Prediction Problem**
+
+### Prediction Problem
+
+The goal of this project is to predict the total preparation time (in minutes) for a recipe before it is cooked. Because the target variable, minutes, is continuous, this is a **regression** problem.
+
+### Response Variable
+minutes: total preparation time
+I chose this variable because:
+
+* It is a practical and meaningful quantity that affects how users choose recipes.
+
+* My earlier EDA showed connections between recipe complexity (steps, ingredients) and preparation time.
+
+* Predicting prep time is useful for real-world decision-making (e.g., “Do I have time to cook this?”).
+
+### Features Available at Time of Prediction
+
+To keep the prediction process realistic, I only include information that a user would already know when viewing a recipe, such as:
+
+#### Recipe structure
+
+* n_steps
+
+* n_ingredients
+
+* steps_per_ingredient (engineered)
+
+* step_bin
+
+#### Ingredients & nutrition
+
+* calories, protein, sugar, etc.
+
+* calories_per_ingredient (engineered)
+
+#### Excluded features
+
+* Ratings and reviews (occur after cooking)
+
+* Anything derived from user interaction history
+
+This ensures temporal validity: the model does not use information that would not exist yet at prediction time.
+
+#### Evaluation Metric
+**Primary Metric**: RMSE (Root Mean Squared Error) was chosen because: It penalizes large errors more heavily, which is important since misestimating a recipe by a large amount (e.g., predicting 30 minutes when it really takes 120) is worse than being slightly off.
+
+Preparation times exhibit skew and outliers, and RMSE helps highlight models that manage extreme cases better.
+
+**Secondary Metric** : MAE (Mean Absolute Error) is included for interpretability, it reflects the typical deviation between predicted and actual minutes.
+
+Accuracy, F1-score, and other classification metrics are inappropriate because this is not a classification task.
+
+
+This prediction problem aligns with the theme of the project:
+**understanding what features influence recipe complexity and prep time**
+
+My EDA showed that steps, ingredients, and nutritional values relate to prep time. The modeling pipeline naturally extends those findings by quantifying their predictive power. The use of time-valid features ensures the model could be deployed realistically on a recipe website.
 
 ## **Baseline Model**
 
