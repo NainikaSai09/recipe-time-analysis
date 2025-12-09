@@ -5,43 +5,76 @@
 
 ## Introduction
 
-This project analyzes recipe data from Food.com, a large dataset containing over **83,000 recipes** and their associated metadata. Each recipe includes details such as ingredients, number of steps, nutritional information, tags, user ratings, and more. The dataset provides a rich opportunity to study how recipe characteristics relate to cooking behavior and user experience.
+This project uses the **Food.com Recipes + Interactions** dataset, consisting of two large tables that together describe over 80,000 recipes and more than 700,000 user interactions.
 
-### 🔍 Project Question  
-The central question of this project is:
+### Dataset Size
 
-**“Can we predict how long a recipe will take to prepare based on its ingredients, steps, and nutritional attributes?”**
+| Dataset        | Rows    | Columns |
+|----------------|---------|---------|
+| **Recipes**    | 83,782  | 12      |
+| **Interactions** | 731,927 | 5       |
 
-Preparation time is one of the most important factors for home cooks when deciding whether they can make a dish. Understanding which recipe characteristics drive cooking time can help users:
+### Central Question
 
-- Choose recipes that match their available time  
-- Estimate meal-planning needs more accurately  
-- Understand which aspects of a recipe make it more time-consuming  
+> **What factors help us predict how long a recipe will take to prepare (in minutes)?**
 
-### 📊 Dataset Overview  
-After cleaning, the dataset contains **83,782 rows and 21 columns**.  
-The columns most relevant to our prediction problem are:
+For everyday cooking, time is one of the most important constraints. Accurately estimating preparation time helps users:
 
-| Column | Description |
-|--------|-------------|
-| **minutes** | Total time required to prepare the recipe (target variable). |
-| **n_steps** | Number of steps in the recipe’s instructions; reflects complexity. |
-| **n_ingredients** | Number of unique ingredients; measures recipe size. |
-| **description** | Optional text written by the recipe author; often missing. |
-| **tags** | Categorical list describing properties (e.g., “quick”, “dessert”). |
-| **calories, sugar, protein, sodium, fat** | Nutritional attributes related to effort and cooking method. |
-| **step_bin** | A derived categorical version of step count (e.g., “0–5”, “6–10”). |
-| **desc_missing** | Indicator of whether the description is missing. |
+- choose recipes that fit their schedule  
+- avoid overly time-consuming dishes  
+- plan meals efficiently  
 
-These columns provide a mix of quantitative and categorical information that can be used to model cooking time.
+This makes `minutes` an essential and practical prediction target.
 
 ---
 
-## Why This Question Matters
+### Dataset Description
 
-Cooking time is central to food preparation. Many people filter recipes by how long they take, yet actual time often varies from expectations. If we can **predict preparation time accurately from recipe structure**, we can make recipe platforms more informative and help cooks plan meals more effectively.
+### **Recipes Table**
 
-This project combines statistical inference, missingness analysis, and predictive modeling to answer this question using real-world recipe data.
+| Column | Description |
+|--------|-------------|
+| **`name`** | Recipe name |
+| **`id`** | Recipe ID |
+| **`minutes`** | Total minutes required to prepare the recipe |
+| **`contributor_id`** | ID of the user who submitted the recipe |
+| **`submitted`** | Date the recipe was submitted |
+| **`tags`** | List of Food.com tags assigned to the recipe |
+| **`nutrition`** | Nutrition information in the form:<br> `[calories, total fat (PDV), sugar (PDV), sodium (PDV), protein (PDV), saturated fat (PDV), carbohydrates (PDV)]` |
+| **`n_steps`** | Number of preparation steps |
+| **`steps`** | List of step-by-step instructions |
+| **`description`** | User-provided recipe description |
+| **`n_ingredients`** | Number of ingredients (computed during cleaning) |
+| **`average_rating`** | Mean rating aggregated from the interactions table |
+
+---
+
+### **Ratings / Interactions Table**
+
+| Column | Description |
+|--------|-------------|
+| **`user_id`** | ID of the user leaving a rating or review |
+| **`recipe_id`** | ID of the recipe being reviewed |
+| **`date`** | Date of the interaction |
+| **`rating`** | Rating given (1–5; 0 indicates no rating provided) |
+| **`review`** | Text of the user's review |
+
+---
+
+### Relevant Columns for Prediction
+
+For predicting preparation time (`minutes`), the most relevant variables include:
+
+- **`n_steps`** — procedural complexity  
+- **`n_ingredients`** — number of components required  
+- **nutritional features** — calorie density, sugar, protein, etc.  
+- **`step_bin`** — binned complexity level  
+- **engineered features** — such as calories-per-ingredient and steps-per-ingredient  
+
+These features describe recipe structure and complexity, which logically influence preparation time.
+
+
+
 
 
 ## Data Cleaning and Exploratory Data Analysis
