@@ -161,7 +161,9 @@ One of the relationships was the one between number of steps and preparation tim
   frameborder="0">
 </iframe>
 
-Interpretation: This plot reveals a weak but noticeable positive relationship between the number of steps and preparation time. Recipes with more steps tend to require longer cooking times, but the association is highly variable, even recipes with few steps can take anywhere from a few minutes to several hours. The log scale shows that prep times span multiple orders of magnitude, highlighting the complexity and diversity of recipe structures.
+#### Interpretation: 
+
+This plot reveals a weak but noticeable positive relationship between the number of steps and preparation time. Recipes with more steps tend to require longer cooking times, but the association is highly variable, even recipes with few steps can take anywhere from a few minutes to several hours. The log scale shows that prep times span multiple orders of magnitude, highlighting the complexity and diversity of recipe structures.
 
 ### Interesting Aggregates
 
@@ -182,7 +184,130 @@ More complex recipes (those with many steps) tend to require more ingredients an
 
 ## **Assessment of Missingness**
 
+### NMAR Analysis
+I believe the **`description`** column is **NMAR (Not Missing At Random)**. Whether a contributor writes a description likely depends on unobserved, person-specific factors such as their motivation, writing habits, or how strongly they feel about the recipe. These factors are **not recorded** anywhere else in the dataset, so the probability that `description` is missing cannot be fully explained using observed variables like `n_steps`, `minutes`, or `average_rating`.
+
+Because this missingness mechanism depends on unobserved contributor traits, the missingness in `description` is best characterized as **NMAR**. To potentially treat it as **MAR**, we would need additional data about user behavior — for example, per-user history of how often they leave descriptions, time spent on the site, or whether they usually post detailed content. With such behavioral features, we might be able to model the missingness using observed information instead of unobserved preferences.
+
+### Missingness Dependency
+
+To understand whether the missingness in the `description` column depends on observable recipe characteristics, I performed **two permutation tests**:
+
+1. Does missingness depend on **`n_steps`** (recipe complexity)?
+2. Does missingness depend on **`calories`** (nutritional content)?
+
+For both tests, the test statistic was the **absolute difference in means** between:
+- recipes **with** missing descriptions, and  
+- recipes **without** missing descriptions.
+
+#### 1. Does missingness depend on `n_steps`?
+
+**Hypotheses**
+
+- **H₀:** Missingness of `description` does **not** depend on `n_steps`.  
+- **H₁:** Missingness of `description` **does** depend on `n_steps`.
+
+**Observed statistic:** ≈ **0.995**  
+**Permutation test p-value:** **0.201**
+
+This p-value is larger than 0.05, meaning the observed difference in average step count is **not statistically significant**.  
+Although recipes with missing descriptions appear *slightly* more complex, this difference is consistent with what could arise by random chance.
+
+**Conclusion:**  
+There is **no evidence** that `n_steps` influences whether a description is missing.
+
+**(Embed your boxplot here)**  
+```html
+<iframe
+  src="assets/missing.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+Recipes with missing descriptions have slightly more steps on average, but the distributions overlap heavily, suggesting no meaningful difference.
+
+#### 2. Does missingness depend on `calories`?
+
+**Hypotheses**
+
+- **H₀:** Missingness of `description` does **not** depend on `calories`.  
+- **H₁:** Missingness of `description` **does** depend on `calories`.
+
+**Observed statistic:** ≈ **75.993**  
+**Permutation test p-value:** **0.248**
+
+This p-value is well above 0.05, meaning the difference in mean calories between missing and non-missing descriptions is not statistically significant.
+Calorie content appears unrelated to whether someone writes a description.
+
+**Conclusion:**  
+There is no evidence that recipe calories influence missingness of the description field.
+
+**(Embed your boxplot here)**  
+```html
+<iframe
+  src="assets/absdiff_dist.html.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+The observed difference in mean steps lies well within the null distribution, indicating that the small difference could easily occur by random chance.
+
 ## **Hypothesis Testing**
+
+To investigate whether recipe complexity affects preparation time, I tested whether high-step recipes take longer, on average, than low-step recipes.
+
+#### Null Hypothesis (H₀):
+
+There is no difference in average preparation time between high-step and low-step recipes.
+Any observed difference is due to random chance.
+
+#### Alternative Hypothesis (H₁):
+
+High-step recipes have a higher mean preparation time than low-step recipes.
+
+#### Test Statistic
+
+Using the difference in mean minutes between the two groups:
+
+𝑇 = mean(minutes for high-step recipes) − mean(minutes for low-step recipes)
+
+A one-sided permutation test was used because:
+
+* It makes no assumptions about the data distribution (important because minutes is highly skewed).
+
+* Shuffling the group labels simulates a world where step count does not matter, directly aligning with our null hypothesis.
+
+#### Significance level:
+0.05
+
+These choices fit the question because the mean-difference statistic directly measures whether high-step recipes take longer, and a permutation test is robust to the skewed minutes distribution. A one-sided test matches the directional hypothesis, and α = 0.05 is a standard threshold for evaluating evidence.
+
+#### Results
+
+Observed statistic: ≈ 19.30 minutes
+
+Permutation test p-value: 0.000 (≈ 0 when rounded)
+
+#### Interpretation
+
+The observed difference is far larger than nearly all differences generated under the null distribution.
+Because the p-value is less than 0.05, we reject the null hypothesis.
+
+However, this does not prove that high-step recipes always require more time.
+Rather, the evidence suggests that recipes with more steps tend to take longer to prepare, beyond what could be explained by random variation in this dataset.
+
+<iframe   
+  src="assets/diff_mean_mins.html.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+#### Interpretation:
+The observed difference in mean preparation time (red line) is far outside the range of values generated under the null distribution, indicating that the difference between high-step and low-step recipes is much larger than what would be expected by chance.
+
 
 ## **Framing a Prediction Problem**
 
