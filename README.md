@@ -398,6 +398,86 @@ While the baseline captures some linear relationship between recipe complexity a
 
 ## **Final Model**
 
+#### Feature Engineering
+
+To improve predictive performance beyond the baseline model, I created two additional features based on the data-generating process of recipe preparation:
+
+#### 1. `calories_per_ingredient`
+\[
+\text{calories per ingredient} = \frac{\text{calories}}{\text{n\_ingredients}}
+\]
+
+This measures how calorie-dense a recipe is relative to its size. Rich, dense recipes often require more involved cooking processes (e.g., baking or simmering), which can increase preparation time.
+
+#### 2. `steps_per_ingredient`
+\[
+\text{steps per ingredient} = \frac{\text{n\_steps}}{\text{n\_ingredients}}
+\]
+
+This captures procedural complexity. Recipes with many steps per ingredient often involve more precise or time-intensive techniques.
+
+#### Other Features Included
+
+| Feature | Type | Reason for Inclusion |
+|---------|------|----------------------|
+| `n_steps` | Quantitative | Reflects procedural depth |
+| `n_ingredients` | Quantitative | Structural complexity |
+| `calories`, `protein`, `sugar` | Quantitative | Relate to recipe richness and cooking methods |
+| `calories_per_ingredient`, `steps_per_ingredient` | Engineered quantitative | Capture density & complexity |
+| `step_bin` | Nominal | Allows nonlinear category differences |
+
+These features together reflect real mechanisms that influence preparation time.
+
+---
+
+#### Modeling Algorithm
+
+I selected **GradientBoostingRegressor** as the final model because it:
+
+- captures nonlinear relationships  
+- handles skewed numeric targets (like recipe time)  
+- models interactions between features  
+- generally outperforms linear models on structured tabular data  
+
+This makes it well-suited for predicting preparation time.
+
+---
+
+#### Hyperparameter Tuning
+
+I used **GridSearchCV with 3-fold cross-validation** to select hyperparameters.  
+The grid included:
+
+| Hyperparameter | Values Tested |
+|----------------|----------------|
+| `n_estimators` | [200, 300] |
+| `learning_rate` | [0.05, 0.1] |
+| `max_depth` | [2, 3, 4] |
+
+#### Best Hyperparameters Found
+
+{'model__learning_rate': 0.05,
+ 'model__max_depth': 4,
+ 'model__n_estimators': 200}
+
+ #### Final Model Performance
+
+
+| Model | RMSE | MAE |
+|---------|------|----------------------|
+| Baseline (Linear Regression) | 37.41 | 24.93 |
+| Final Model (Gradient Boosting) | 36.89 | 24.38 |
+
+#### Interpretation
+
+* RMSE improved, meaning the final model makes fewer large errors.
+* MAE improved, showing typical errors are smaller.
+* Improvements are modest but meaningful, given the natural variability in recipe preparation times.
+
+Feature engineering captured more of the real cooking process, gradient boosting models nonlinear patterns that linear regression cannot, and cross-validated hyperparameter tuning ensures better generalization.
+
+Overall, the final model aligns more closely with how recipes are actually prepared and shows measurable improvement over the baseline model.
+
 ## **Fairness Analysis**
 
 
