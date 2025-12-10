@@ -28,7 +28,6 @@ The Food.com dataset is uniquely valuable because it combines detailed recipe st
 
 This makes `minutes` an essential and practical prediction target.
 
----
 
 ### Dataset Description
 
@@ -49,7 +48,6 @@ This makes `minutes` an essential and practical prediction target.
 | **`n_ingredients`** | Number of ingredients (computed during cleaning) |
 | **`average_rating`** | Mean rating aggregated from the interactions table |
 
----
 
 #### Interactions Table
 
@@ -61,7 +59,6 @@ This makes `minutes` an essential and practical prediction target.
 | **`rating`** | Rating given (1–5; 0 indicates no rating provided) |
 | **`review`** | Text of the user's review |
 
----
 
 ### Relevant Columns for Prediction
 
