@@ -494,7 +494,6 @@ The observed RMSE difference was **≈ 1.51**. I then ran a permutation test wit
 
 Since 0.036 is slightly below 0.05, this suggests some evidence of a difference in performance. However, the effect size (about 1.5 minutes) is extremely small relative to recipe durations.
 
-#### Conclusion: Although the permutation test yields a marginally significant result, the difference in RMSE is practically negligible. There is **no meaningful evidence of unfairness** in how the model predicts prep time for simple vs. complex recipes.
 
 <iframe
   src="assets/rmse_diff.html"
@@ -503,3 +502,7 @@ Since 0.036 is slightly below 0.05, this suggests some evidence of a difference 
   frameborder="0"
 ></iframe>
 
+The observed RMSE difference lies on the far right tail of the null distribution, indicating that such a large gap between complex and simple recipes would be rare under random chance.
+
+#### Conclusion
+Preparation time is best predicted by recipe complexity, particularly the number of steps, number of ingredients, and how much procedural effort is required per ingredient. Nutritional density also provides additional signal. Models that incorporate these features can meaningfully predict cooking time, and they do so without unfairly disadvantaging simple or complex recipes.
