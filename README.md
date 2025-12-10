@@ -1,4 +1,4 @@
-# 🍽️ Recipe Time Predictor
+# 🍽️ Predicting Cooking Time: What Recipe Data Can Tell Us
 ### Author: Nainika Neerukonda
 
 ---
@@ -490,9 +490,12 @@ For my fairness analysis, I compared model performance between **simple recipes*
 
 #### Significance Level: 0.05
 
-The observed RMSE difference was **≈ 1.51**. I then ran a permutation test with 1000 shuffles of the group labels to simulate the distribution of RMSE differences under the null. The resulting **p-value was 0.036**.
+The observed RMSE difference was **≈ 1.51**. I then ran a permutation test with 1000 shuffles of the group labels to simulate the distribution of RMSE differences under the null. The resulting 
+**p-value was 0.036**.
 
 Since 0.036 is slightly below 0.05, this suggests some evidence of a difference in performance. However, the effect size (about 1.5 minutes) is extremely small relative to recipe durations.
+
+We reject the null hypothesis at the 5% significance level, though the effect size is extremely small and not practically meaningful.
 
 
 <iframe
@@ -505,4 +508,4 @@ Since 0.036 is slightly below 0.05, this suggests some evidence of a difference 
 The observed RMSE difference lies on the far right tail of the null distribution, indicating that such a large gap between complex and simple recipes would be rare under random chance.
 
 #### Conclusion
-Preparation time is best predicted by recipe complexity, particularly the number of steps, number of ingredients, and how much procedural effort is required per ingredient. Nutritional density also provides additional signal. Models that incorporate these features can meaningfully predict cooking time, and they do so without unfairly disadvantaging simple or complex recipes.
+Preparation time is best predicted by recipe complexity, particularly the number of steps, number of ingredients, and how much procedural effort is required per ingredient. Nutritional density also provides additional signal. Models that incorporate these features can meaningfully predict cooking time, and they do so without unfairly disadvantaging simple or complex recipes. These insights help home cooks estimate preparation time more accurately and highlight which recipe attributes truly drive cooking duration.
