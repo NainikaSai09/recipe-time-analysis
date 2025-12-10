@@ -403,16 +403,16 @@ While the baseline captures some linear relationship between recipe complexity a
 To improve predictive performance beyond the baseline model, I created two additional features based on the data-generating process of recipe preparation:
 
 #### 1. `calories_per_ingredient`
-\[
-\text{calories per ingredient} = \frac{\text{calories}}{\text{n\_ingredients}}
-\]
+
+**calories per ingredient = calories \ n_ingredients**
+
 
 This measures how calorie-dense a recipe is relative to its size. Rich, dense recipes often require more involved cooking processes (e.g., baking or simmering), which can increase preparation time.
 
 #### 2. `steps_per_ingredient`
-\[
-\text{steps per ingredient} = \frac{\text{n\_steps}}{\text{n\_ingredients}}
-\]
+
+**steps per ingredient = n_steps \ n_ingredients**
+
 
 This captures procedural complexity. Recipes with many steps per ingredient often involve more precise or time-intensive techniques.
 
@@ -428,7 +428,6 @@ This captures procedural complexity. Recipes with many steps per ingredient ofte
 
 These features together reflect real mechanisms that influence preparation time.
 
----
 
 #### Modeling Algorithm
 
@@ -440,8 +439,6 @@ I selected **GradientBoostingRegressor** as the final model because it:
 - generally outperforms linear models on structured tabular data  
 
 This makes it well-suited for predicting preparation time.
-
----
 
 #### Hyperparameter Tuning
 
@@ -460,7 +457,8 @@ The grid included:
  'model__max_depth': 4,
  'model__n_estimators': 200}
 
- #### Final Model Performance
+ 
+#### Final Model Performance
 
 
 | Model | RMSE | MAE |
@@ -480,4 +478,28 @@ Overall, the final model aligns more closely with how recipes are actually prepa
 
 ## **Fairness Analysis**
 
+For my fairness analysis, I compared model performance between **simple recipes** (those with ≤ the median number of ingredients) and **complex recipes** (those with > the median). I chose ingredient count because it meaningfully reflects recipe complexity and could influence how difficult prep-time prediction is. I evaluated fairness using **RMSE**, since my task is regression and RMSE appropriately captures prediction error magnitude.
+
+**Null Hypothesis:** The model is fair. Its RMSE for simple and complex recipes is roughly the same, and any observed difference is due to random chance.  
+**Alternative Hypothesis:** The model is unfair. Its RMSE for complex recipes is higher than its RMSE for simple recipes.  
+
+#### Test Statistic:  
+
+**RMSE_complex - RMSE_simple**
+
+
+#### Significance Level: 0.05
+
+The observed RMSE difference was **≈ 1.51**. I then ran a permutation test with 1000 shuffles of the group labels to simulate the distribution of RMSE differences under the null. The resulting **p-value was 0.036**.
+
+Since 0.036 is slightly below 0.05, this suggests some evidence of a difference in performance. However, the effect size (about 1.5 minutes) is extremely small relative to recipe durations.
+
+#### Conclusion: Although the permutation test yields a marginally significant result, the difference in RMSE is practically negligible. There is **no meaningful evidence of unfairness** in how the model predicts prep time for simple vs. complex recipes.
+
+<iframe
+  src="assets/rmse_diff.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
 
